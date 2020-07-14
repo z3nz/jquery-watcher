@@ -1,6 +1,6 @@
 {
   "name": "jquery-watcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write Mustache.js templates in elements and have them update automatically with reactive data.",
   "repository": "github:z3nz/jquery-watcher",
   "main": "dist/index.js",
