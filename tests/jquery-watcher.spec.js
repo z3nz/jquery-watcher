@@ -2,6 +2,7 @@ const jw = '../dist/index'
 
 beforeEach(() => {
   jest.dontMock('jquery')
+  jest.dontMock('mustache')
   jest.resetModules()
 })
 
@@ -23,6 +24,18 @@ describe('jquery-watcher', () => {
   it('should use the window jquery', () => {
     jest.doMock('jquery', () => { throw Error('module not found') })
     global.window.$ = { fn: { jquery: '1.4.0' } }
+    require(jw)
+    expect(global.window.$.fn.watcher).toBeDefined()
+  })
+
+  it('should throw error if mustache is not found', () => {
+    jest.mock('mustache')
+    expect(() => require(jw)).toThrowError('not installed')
+  })
+
+  it('should use the window mustache', () => {
+    jest.doMock('mustache', () => { throw Error('module not found') })
+    global.window.Mustache = {}
     require(jw)
     expect(global.window.$.fn.watcher).toBeDefined()
   })
@@ -134,5 +147,16 @@ describe('jquery-watcher', () => {
     global.console.warn = warn
     $('div').watcher('')
     expect(warn.mock.calls.length).toBe(1)
+  })
+
+  it('should run the readme example', () => {
+    require(jw)
+    const $ = require('jquery')
+    document.body.innerHTML = '<button>Clicked: {{ count }}</button>'
+    $('button').watcher({ count: 0 }).click(function () {
+      $(this).watcher().count++
+    })
+
+    expect($('button').click().text()).toBe('Clicked: 1')
   })
 })

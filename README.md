@@ -2,27 +2,30 @@
 
 Write [Mustache.js](https://github.com/janl/mustache.js) templates in elements and have them update automatically with reactive data.
 
-```javascript
+```html
 <button>Clicked: {{ count }}</button>
 
+<script>
 $('button').watcher({ count: 0 }).click(function () {
-  this.watcher().count++
+  $(this).watcher().count++
 })
 
 $('button').click().text()
-
 // Clicked: 1
+</script>
 ```
 
 ## Getting started
 
+### Install as a module
+
 npm:
-```bash
+```shell
 npm i jquery-watcher
 ```
 
 yarn:
-```bash
+```shell
 yarn add jquery-watcher
 ```
 
@@ -37,7 +40,16 @@ import 'jquery-watcher'
 require('jquery-watcher')
 ```
 
-CDN coming soon...
+### CDN
+
+```html
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Mustache.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.0.1/mustache.min.js"></script>
+<!-- jQuery Watcher -->
+<script src="https://unpkg.com/jquery-watcher@latest/dist/index.js"></script>
+```
 
 ## API
 
@@ -46,16 +58,16 @@ CDN coming soon...
 Pass a data object that you want to be reactive. Returns jQuery.
 This will immediately render your template.
 
-```javascript
+```html
 <div>Hello {{ value }}</div>
 
+<script>
 $('div').watcher({ value: 'World' }).text()
-
 // Hello World
 
 $('div').watcher({ value: 'Adam' }).text()
-
 // Hello Adam
+</script>
 ```
 
 ### `.watcher() => Object`
@@ -63,19 +75,21 @@ $('div').watcher({ value: 'Adam' }).text()
 If no argument is passed, it will return the reactive data object.
 If you manipulate the properties on the object, it will automatically re-render your template.
 
-```javascript
+```html
 <div>Hello {{ text }}</div>
 
+<script>
 const data = $('div').watcher({ text: 'World' }).watcher()
 data.text = 'Adam'
 $('div').text()
-
 // Hello Adam
+</script>
 ```
 
 ## TODOs
 
-- [ ] CDN
-- [ ] Config Options
-- [ ] Reactive Arrays
+- [x] CDN
+- [ ] Config options
+- [ ] TypeScript support
+- [ ] Reactive arrays
 - [ ] Allow template modification
