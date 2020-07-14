@@ -34,7 +34,7 @@ import 'jquery-watcher'
 
 // or
 
-require('jquery-watcher)
+require('jquery-watcher')
 ```
 
 CDN coming soon...
