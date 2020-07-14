@@ -16,12 +16,12 @@ $('button').click().text()
 
 ## Getting started
 
-NPM:
+npm:
 ```bash
 npm i jquery-watcher
 ```
 
-Yarn:
+yarn:
 ```bash
 yarn add jquery-watcher
 ```

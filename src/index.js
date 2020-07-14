@@ -3,7 +3,7 @@ import Mustache from 'mustache'
 const dataKey = 'jquery-watcher-data'
 const textKey = 'jquery-watcher-initial-text'
 
-const minVersion = require('../package.json').optionalDependencies.jquery
+const minVersion = require('../package.json').peerDependencies.jquery
 const mv = minVersion.replace('>=', '').split('.')
 
 let jQuery
