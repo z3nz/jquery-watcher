@@ -1,6 +1,6 @@
 {
   "name": "jquery-watcher",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Watch variable changes and update DOM elements automatically.",
   "main": "dist/index.js",
   "scripts": {
