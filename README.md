@@ -1,4 +1,4 @@
-# jQuery Watcher
+# jQuery Watcher <a href="https://codecov.io/github/z3nz/jquery-watcher?branch=master"><img src="https://img.shields.io/codecov/c/github/z3nz/jquery-watcher/master.svg" alt="Coverage Status"></a>
 
 Write [Mustache.js](https://github.com/janl/mustache.js) templates in elements and have them update automatically with reactive data.
 
