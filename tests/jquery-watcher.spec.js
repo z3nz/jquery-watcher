@@ -1,4 +1,4 @@
-const jw = '../dist/index'
+const jw = '../src/jquery-watcher.js'
 
 beforeEach(() => {
   jest.dontMock('jquery')

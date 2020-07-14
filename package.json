@@ -3,10 +3,14 @@
   "version": "1.1.0",
   "description": "Write Mustache.js templates in elements and have them update automatically with reactive data.",
   "repository": "github:z3nz/jquery-watcher",
-  "main": "dist/index.js",
+  "main": "dist/jquery-watcher.min.js",
   "scripts": {
-    "test": "npm run build && jest --collect-coverage",
-    "build": "babel src -d dist --source-maps"
+    "lint": "eslint src/**",
+    "test": "jest --coverage",
+    "build:default": "babel src/jquery-watcher.js -o dist/jquery-watcher.js -s",
+    "build:min": "babel src/jquery-watcher.js -o dist/jquery-watcher.min.js -s --presets=minify",
+    "build": "npm run lint && npm run build:min && npm run build:default",
+    "prepublishOnly": "npm test && npm run build"
   },
   "keywords": [
     "jquery",
@@ -30,6 +34,7 @@
     "@babel/cli": "^7.10.4",
     "@babel/core": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
+    "babel-preset-minify": "^0.5.1",
     "codecov": "^3.7.0",
     "eslint": "^7.4.0",
     "eslint-config-standard": "^14.1.1",

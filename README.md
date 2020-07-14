@@ -48,7 +48,7 @@ require('jquery-watcher')
 <!-- Mustache.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.0.1/mustache.min.js"></script>
 <!-- jQuery Watcher -->
-<script src="https://unpkg.com/jquery-watcher@latest/dist/index.js"></script>
+<script src="https://unpkg.com/jquery-watcher@1.1.1/dist/jquery-watcher.min.js"></script>
 ```
 
 ## API
