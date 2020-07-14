@@ -4,8 +4,8 @@
   "description": "Watch variable changes and update DOM elements automatically.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm run build && jest",
-    "build": "babel src -d dist"
+    "test": "npm run build && jest --collect-coverage",
+    "build": "babel src -d dist --source-maps"
   },
   "keywords": [
     "jquery",

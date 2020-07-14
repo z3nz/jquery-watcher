@@ -60,6 +60,8 @@ try {
       })
 
       return this
+    } else {
+      console.warn('jquery-watcher: received a non-object argument, it was ignored')
     }
   }
 

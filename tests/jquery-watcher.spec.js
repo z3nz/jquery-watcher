@@ -5,6 +5,9 @@ beforeEach(() => {
   jest.resetModules()
 })
 
+const originalWarn = console.warn
+afterEach(() => (console.warn = originalWarn))
+
 describe('jquery-watcher', () => {
   it('should throw error if jquery is not found', () => {
     jest.mock('jquery')
@@ -15,6 +18,13 @@ describe('jquery-watcher', () => {
     const version = '1.3.9'
     jest.doMock('jquery', () => ({ fn: { jquery: version } }))
     expect(() => require(jw)).toThrowError(version)
+  })
+
+  it('should use the window jquery', () => {
+    jest.doMock('jquery', () => { throw Error('module not found') })
+    global.window.$ = { fn: { jquery: '1.4.0' } }
+    require(jw)
+    expect(global.window.$.fn.watcher).toBeDefined()
   })
 
   it('should define the watcher plugin', () => {
@@ -103,5 +113,26 @@ describe('jquery-watcher', () => {
     $div.watcher({ text: 'World' })
     $div.watcher().text = 'Adam'
     expect($div.text()).toBe('Hello Adam')
+  })
+
+  it('should append', () => {
+    require(jw)
+    const $ = require('jquery')
+    document.body.innerHTML = ''
+    const $div = $('<div>Hello {{text}}</div>')
+
+    $div.watcher({ text: 'World' })
+    $div.watcher().text = 'Adam'
+    $div.appendTo('body')
+    expect($('body').text()).toBe('Hello Adam')
+  })
+
+  it('should warn', () => {
+    require(jw)
+    const $ = require('jquery')
+    const warn = jest.fn()
+    global.console.warn = warn
+    $('div').watcher('')
+    expect(warn.mock.calls.length).toBe(1)
   })
 })
