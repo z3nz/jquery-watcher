@@ -1,4 +1,5 @@
-const jw = '../src/jquery-watcher.js'
+const path = require('path')
+const jw = path.join('../', require('../package.json').main)
 
 beforeEach(() => {
   jest.dontMock('jquery')

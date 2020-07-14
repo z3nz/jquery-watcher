@@ -10,7 +10,7 @@
     "build:default": "babel src/jquery-watcher.js -o dist/jquery-watcher.js -s",
     "build:min": "babel src/jquery-watcher.js -o dist/jquery-watcher.min.js -s --presets=minify",
     "build": "npm run lint && npm run build:min && npm run build:default",
-    "prepublishOnly": "npm test && npm run build",
+    "prepublishOnly": "npm run build && npm test",
     "postpublish": "codecov"
   },
   "keywords": [
