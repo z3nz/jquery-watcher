@@ -2,6 +2,7 @@
   "name": "jquery-watcher",
   "version": "1.0.0",
   "description": "Watch variable changes and update DOM elements automatically.",
+  "repository": "github:z3nz/jquery-watcher",
   "main": "dist/index.js",
   "scripts": {
     "test": "npm run build && jest --collect-coverage",
