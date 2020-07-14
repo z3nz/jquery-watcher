@@ -26,6 +26,19 @@ yarn:
 yarn add jquery-watcher
 ```
 
+Initialize the plugin once in your project:
+```javascript
+// src/plugins.js
+
+import 'jquery-watcher'
+
+// or
+
+require('jquery-watcher)
+```
+
+CDN coming soon...
+
 ## API
 
 ### `.watcher( data: Object ) => jQuery`
