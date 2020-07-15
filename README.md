@@ -15,7 +15,7 @@ $('button').click().text()
 </script>
 ```
 
-## Getting started
+## Getting Started
 
 ### Install as a module
 
@@ -73,7 +73,7 @@ $('div').watcher({ value: 'Adam' }).text()
 ### `.watcher() => Object`
 
 If no argument is passed, it will return the reactive data object.
-If you manipulate the properties on the reactive data, it will automatically re-render your template.
+If you manipulate the properties on the reactive object, it will automatically re-render your template.
 
 ```html
 <div>Hello {{ text }}</div>
