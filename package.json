@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "eslint src/**",
     "test": "jest --coverage",
+    "test:jquery": "npm i jquery --no-save && npm test",
     "build:default": "babel src/jquery-watcher.js -o dist/jquery-watcher.js -s",
     "build:min": "babel src/jquery-watcher.js -o dist/jquery-watcher.min.js -s --presets=minify",
     "build": "npm run lint && npm run build:min && npm run build:default",

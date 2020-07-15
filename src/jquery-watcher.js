@@ -62,7 +62,7 @@
             $(this).text(Mustache.render(el[textKey], data))
 
             // Create our new watcher data object
-            el[dataKey] = new Proxy(data, {
+            el[dataKey] = new Proxy(JSON.parse(JSON.stringify(data)), {
               set: (target, prop, value) => {
                 target[prop] = value
                 // Replace the merge tags with our updated data

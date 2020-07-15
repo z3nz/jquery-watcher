@@ -44,16 +44,16 @@ require('jquery-watcher')
 
 ```html
 <!-- jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
 <!-- Mustache.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.0.1/mustache.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mustache@4.0.1/mustache.min.js"></script>
 <!-- jQuery Watcher -->
-<script src="https://unpkg.com/jquery-watcher@1.1.1/dist/jquery-watcher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-watcher@1.2.0/dist/jquery-watcher.min.js"></script>
 ```
 
 ## API
 
-### `.watcher( data: Object ) => jQuery`
+### `.watcher(data: Object) => jQuery`
 
 Pass a data object that you want to be reactive. Returns jQuery.
 This will immediately render your template.
@@ -73,23 +73,46 @@ $('div').watcher({ value: 'Adam' }).text()
 ### `.watcher() => Object`
 
 If no argument is passed, it will return the reactive data object.
-If you manipulate the properties on the object, it will automatically re-render your template.
+If you manipulate the properties on the reactive data, it will automatically re-render your template.
 
 ```html
 <div>Hello {{ text }}</div>
 
 <script>
 const data = $('div').watcher({ text: 'World' }).watcher()
+
 data.text = 'Adam'
+
 $('div').text()
 // Hello Adam
+</script>
+```
+
+### `.watcher() => [Object, ...]`
+
+If there is more than one element, it will return an array of reactive data objects.
+
+```html
+<div>{{ hero }}</div>
+<div>{{ hero }}</div>
+
+<script>
+// [{ hero: 'Superman' }, { hero: 'Superman' }]
+const [div1, div2] = $('div').watcher({ hero: 'Superman' }).watcher()
+
+div2.hero = 'Batman'
+
+$('div:nth-child(1)').text()
+// Superman
+
+$('div:nth-child(2)').text()
+// Batman
 </script>
 ```
 
 ## TODOs
 
 - [x] CDN
-- [ ] Config options
-- [ ] TypeScript support
 - [ ] Reactive arrays
 - [ ] Allow template modification
+- [ ] Config options

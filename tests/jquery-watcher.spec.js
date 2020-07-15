@@ -85,7 +85,10 @@ describe('jquery-watcher', () => {
     const $div = $('div')
 
     $div.watcher({ value: 1 })
-    expect($div.watcher()).toEqual([{ value: 1 }, { value: 1 }])
+    const data = $div.watcher()
+    expect(data).toEqual([{ value: 1 }, { value: 1 }])
+    data[0].value = 2
+    expect($div.watcher()).toEqual([{ value: 2 }, { value: 1 }])
   })
 
   it('should return undefined if no elements are found', () => {
@@ -150,14 +153,19 @@ describe('jquery-watcher', () => {
     expect(warn.mock.calls.length).toBe(1)
   })
 
-  it('should run the readme example', () => {
+  it('should run the readme examples', () => {
     require(jw)
     const $ = require('jquery')
     document.body.innerHTML = '<button>Clicked: {{ count }}</button>'
     $('button').watcher({ count: 0 }).click(function () {
       $(this).watcher().count++
     })
-
     expect($('button').click().text()).toBe('Clicked: 1')
+
+    document.body.innerHTML = '<div>{{hero}}</div><div>{{hero}}</div>'
+    const [, div2] = $('div').watcher({ hero: 'Superman' }).watcher()
+    div2.hero = 'Batman'
+    expect($('div:nth-child(1)').text()).toBe('Superman')
+    expect($('div:nth-child(2)').text()).toBe('Batman')
   })
 })
