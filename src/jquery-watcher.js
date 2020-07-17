@@ -24,13 +24,34 @@
     const version = $.fn.jquery
     const v = version.split('.')
 
-    if (v[0] >= mv[0] && v[1] >= mv[1] && v[2] >= mv[2]) $.fn.watcher = watcher
+    if (v.every((a, i) => a >= mv[i])) $.fn.watcher = watcher
     else throw Error(`jquery-watcher: jQuery version is ${version} and jquery-watcher requires a version >= ${minVersion}`)
 
     const dataKey = 'jquery-watcher-data'
-    const textKey = 'jquery-watcher-initial-text'
+    const tempKey = 'jquery-watcher-template'
 
-    function watcher (data) {
+    // Helpers
+    const isObj = data => !!data && data.constructor === Object
+    const reactify = ($this, el, data) => {
+      // Make our data reactive
+      const d = new Proxy(JSON.parse(JSON.stringify(data)), {
+        set: (target, prop, value) => {
+          target[prop] = value
+          // Replace the merge tags with our updated data
+          $this.html(Mustache.render(el[tempKey], target))
+          return true
+        }
+      });
+      // Recursive reactifier
+      (isObj(d) ? Object.keys(d) : d).forEach(k => {
+        if (isObj(d[k]) || Array.isArray(d[k])) {
+          d[k] = reactify($this, el, d[k])
+        }
+      })
+      return d
+    }
+
+    function watcher (data, ...opts) {
       // The user is trying to get watcher data from an element
       if (data === undefined) {
         const returnData = []
@@ -46,36 +67,62 @@
 
         // If there's no elements, return undefined
         return undefined
-      } else if (!!data && data.constructor === Object) {
+      } else if (isObj(data) || Array.isArray(data)) {
         // The user is setting data on one or more elements
         this.each(function (_, el) {
-          // If we find data, update based on the keys or add to the watcher data object
+          // If we find data, update based on the keys/index or add to the data
           if (el[dataKey]) {
-            Object.keys(data).forEach(k => {
-              el[dataKey][k] = data[k]
-            })
-          } else {
-            // Save the initial text so we can render on an update
-            el[textKey] = $(this).text()
-
-            // Run initial render
-            $(this).text(Mustache.render(el[textKey], data))
-
-            // Create our new watcher data object
-            el[dataKey] = new Proxy(JSON.parse(JSON.stringify(data)), {
-              set: (target, prop, value) => {
-                target[prop] = value
-                // Replace the merge tags with our updated data
-                $(this).text(Mustache.render(el[textKey], target))
-                return true
+            (isObj(data) ? Object.keys(data) : data).forEach(k => {
+              // If the prop is an object or array, run it through our recursive reactifier
+              if (isObj(data[k]) || Array.isArray(data[k])) {
+                data[k] = reactify(this, data[k])
+              } else {
+                // Otherwise just update/set the data
+                el[dataKey][k] = data[k]
               }
             })
+          } else {
+            const $this = $(this)
+
+            // Save our template
+            el[tempKey] = $this.html()
+
+            // Run initial render
+            $this.html(Mustache.render(el[tempKey], data))
+
+            // Create our new watcher object
+            el[dataKey] = reactify($this, el, data)
           }
         })
 
+        // Return jQuery
+        return this
+      } else if (typeof data === 'string') {
+        // If they pass a string, it's an action
+        switch (data) {
+          case 'render':
+            this.each(function (_, el) {
+              const $this = $(this)
+              if (el[dataKey]) $this.html(Mustache.render($this.html(), el[dataKey]))
+            })
+            break
+          case 'set_template':
+            if (typeof opts[0] !== 'string') console.warn('jquery-watcher: Action "set_template" requires a string, received:', opts[0])
+            else {
+              this.each(function (_, el) {
+                el[tempKey] = opts[0]
+              })
+            }
+            break
+          default:
+            console.warn(`jquery-watcher: There is no action "${data}"`)
+            break
+        }
+
+        // Return jQuery
         return this
       } else {
-        console.warn('jquery-watcher: Received a non-object argument and it was ignored:', data)
+        console.warn('jquery-watcher: Received an unexpected argument and it was ignored:', data)
       }
     }
   })(jQueryVar, mustacheVar)

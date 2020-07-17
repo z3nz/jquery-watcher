@@ -108,7 +108,7 @@ describe('jquery-watcher', () => {
     const $div = $('div')
 
     $div.watcher({})
-    expect($div[0]['jquery-watcher-initial-text']).toBe('Hello World')
+    expect($div[0]['jquery-watcher-template']).toBe('Hello World')
   })
 
   it('should run initial render', () => {
@@ -144,15 +144,6 @@ describe('jquery-watcher', () => {
     expect($('body').text()).toBe('Hello Adam')
   })
 
-  it('should warn', () => {
-    require(jw)
-    const $ = require('jquery')
-    const warn = jest.fn()
-    global.console.warn = warn
-    $('div').watcher('')
-    expect(warn.mock.calls.length).toBe(1)
-  })
-
   it('should run the readme examples', () => {
     require(jw)
     const $ = require('jquery')
@@ -168,4 +159,20 @@ describe('jquery-watcher', () => {
     expect($('div:nth-child(1)').text()).toBe('Superman')
     expect($('div:nth-child(2)').text()).toBe('Batman')
   })
+
+  it('should warn', () => {
+    require(jw)
+    const $ = require('jquery')
+    const warn = jest.fn()
+    global.console.warn = warn
+    $('div').watcher(1)
+    expect(warn.mock.calls.length).toBe(1)
+  })
+
+  // TODO: change warnings to throwing errors
+  // TODO: test nested object reactiveness
+  // TODO: test array reactiveness
+  // TODO: test objects in arrays reactiveness
+  // TODO: test action: render
+  // TODO: test action: set_template
 })
