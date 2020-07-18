@@ -32,18 +32,21 @@
 
     // Helpers
     const isObj = data => !!data && data.constructor === Object
+    const indices = arr => arr.map((_, i) => i)
     const reactify = ($this, el, data) => {
       // Make our data reactive
       const d = new Proxy(JSON.parse(JSON.stringify(data)), {
         set: (target, prop, value) => {
           target[prop] = value
-          // Replace the merge tags with our updated data
-          $this.html(Mustache.render(el[tempKey], target))
+          // Re-render template with our updated data
+          // If data is not set on the element, ignore
+          // console.log(target, prop, value)
+          if (el[dataKey]) $this.html(Mustache.render(el[tempKey], el[dataKey]))
           return true
         }
       });
       // Recursive reactifier
-      (isObj(d) ? Object.keys(d) : d).forEach(k => {
+      (isObj(d) ? Object.keys(d) : indices(d)).forEach(k => {
         if (isObj(d[k]) || Array.isArray(d[k])) {
           d[k] = reactify($this, el, d[k])
         }
@@ -67,15 +70,15 @@
 
         // If there's no elements, return undefined
         return undefined
-      } else if (isObj(data) || Array.isArray(data)) {
+      } else if (isObj(data)) {
         // The user is setting data on one or more elements
         this.each(function (_, el) {
           // If we find data, update based on the keys/index or add to the data
           if (el[dataKey]) {
-            (isObj(data) ? Object.keys(data) : data).forEach(k => {
+            Object.keys(data).forEach(k => {
               // If the prop is an object or array, run it through our recursive reactifier
               if (isObj(data[k]) || Array.isArray(data[k])) {
-                data[k] = reactify(this, data[k])
+                el[dataKey][k] = reactify($(this), el, data[k])
               } else {
                 // Otherwise just update/set the data
                 el[dataKey][k] = data[k]
@@ -103,26 +106,29 @@
           case 'render':
             this.each(function (_, el) {
               const $this = $(this)
-              if (el[dataKey]) $this.html(Mustache.render($this.html(), el[dataKey]))
+              // If the template is empty, try to use the html
+              if (!el[tempKey]) el[tempKey] = $this.html()
+              if (el[dataKey]) $this.html(Mustache.render(el[tempKey], el[dataKey]))
             })
             break
           case 'set_template':
-            if (typeof opts[0] !== 'string') console.warn('jquery-watcher: Action "set_template" requires a string, received:', opts[0])
+            if (typeof opts[0] !== 'string') throw Error('jquery-watcher: Action "set_template" requires a string, received:', opts[0])
             else {
               this.each(function (_, el) {
                 el[tempKey] = opts[0]
+                // Re-render if we find data
+                if (el[dataKey]) $(this).html(Mustache.render(el[tempKey], el[dataKey]))
               })
             }
             break
           default:
-            console.warn(`jquery-watcher: There is no action "${data}"`)
-            break
+            throw Error(`jquery-watcher: There is no action "${data}"`)
         }
 
         // Return jQuery
         return this
       } else {
-        console.warn('jquery-watcher: Received an unexpected argument and it was ignored:', data)
+        throw Error('jquery-watcher: Received an unexpected argument and it was ignored:', data)
       }
     }
   })(jQueryVar, mustacheVar)

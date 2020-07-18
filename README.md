@@ -15,6 +15,8 @@ $('button').click().text()
 </script>
 ```
 
+![](https://i.imgur.com/Uz3JNfw.gif)
+
 ## Getting Started
 
 ### Install as a module
@@ -55,7 +57,7 @@ require('jquery-watcher')
 
 ### `.watcher(data: Object) => jQuery`
 
-Pass a data object that you want to be reactive. Returns jQuery.
+Pass a data object that you want to be reactive. Returns jQuery.<br>
 This will immediately render your template.
 
 ```html
@@ -70,9 +72,47 @@ $('div').watcher({ value: 'Adam' }).text()
 </script>
 ```
 
+All of your nested objects will also be reactive.
+
+```html
+<div>{{ nested.bird }}</div>
+
+<script>
+const { nested } = $('div').watcher({ nested: { bird: '' } }).watcher()
+
+nested.bird = 'Robin'
+
+$('div').text()
+// Robin
+</script>
+```
+
+Arrays too!
+
+```html
+<div>
+  {{ #starks }}
+  <p>{{.}}</p>
+  {{ /starks }}
+</div>
+
+<script>
+const { starks } = $('div').watcher({ starks: ['Ned', 'Sansa', 'Bran', 'Jon'] }).watcher()
+
+starks.pop()
+
+$('div').html()
+/*
+<p>Ned</p>
+<p>Sansa</p>
+<p>Bran</p>
+*/
+</script>
+```
+
 ### `.watcher() => Object`
 
-If no argument is passed, it will return the reactive data object.
+If no argument is passed, it will return the reactive data object.<br>
 If you manipulate the properties on the reactive object, it will automatically re-render your template.
 
 ```html
@@ -110,9 +150,47 @@ $('div:nth-child(2)').text()
 </script>
 ```
 
+## Actions
+
+### `.watcher('set_template', template: String) => jQuery`
+
+Sets a new template on the element. Second argument is your string template. Returns jQuery.<br>
+This will immediately render your new template if there's data.
+
+```html
+<div>{{ things.0 }}</div>
+
+<script>
+const { things } = $('div').watcher({ things: ['Thing 1'] }).watcher()
+$('div').text()
+// Thing 1
+
+things.push('Thing 2')
+$('div').watcher('set_template', '{{ things.0 }} & {{ things.1 }}').text()
+// Thing 1 & Thing 2
+</script>
+```
+
+### `.watcher('render') => jQuery`
+
+Renders your template. Useful if you set your template via `.html()`. Returns jQuery.
+
+```html
+<div></div>
+
+<script>
+$('div')
+  .watcher({ hello: 'world' })
+  .html('{{ hello }}')
+  .watcher('render')
+  .text()
+// world
+</script>
+```
+
 ## TODOs
 
 - [x] CDN
-- [ ] Reactive arrays
-- [ ] Allow template modification
+- [X] Reactive arrays
+- [X] Allow template modification
 - [ ] Config options
