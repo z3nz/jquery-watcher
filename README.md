@@ -50,7 +50,7 @@ require('jquery-watcher')
 <!-- Mustache.js -->
 <script src="https://cdn.jsdelivr.net/npm/mustache@4.0.1/mustache.min.js"></script>
 <!-- jQuery Watcher -->
-<script src="https://cdn.jsdelivr.net/npm/jquery-watcher@1.2.0/dist/jquery-watcher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-watcher@1.3.0/dist/jquery-watcher.min.js"></script>
 ```
 
 ## API
